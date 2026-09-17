@@ -21,6 +21,14 @@ from .analysis import (
 from .artifacts import ArtifactStore
 from .cache import Cache
 from .downloads import ToolManager
+from .resources import (
+    find_resource_references,
+    prepare_resources,
+    read_resource,
+    resolve_resource,
+    resource_inventory,
+    search_resources,
+)
 from .smali import prepare_smali, query_calls, read_method, smali_search_files
 
 Handler = Callable[[argparse.Namespace], dict]
@@ -91,6 +99,31 @@ def build_parser() -> argparse.ArgumentParser:
     command.add_argument("apk_path")
     command.add_argument("source")
 
+    command = _command(commands, "resources_prepare", "Prepare and cache decoded APK resources", _resources_prepare)
+    command.add_argument("apk_path")
+
+    command = _command(commands, "resources_list", "List decoded resource files", lambda a: resource_inventory(Cache(), a.apk_path, a.prefix, a.max_results))
+    command.add_argument("apk_path")
+    command.add_argument("--prefix", default="")
+    command.add_argument("--max-results", type=int, default=2000)
+
+    command = _command(commands, "resources_search", "Search resource paths and decoded text", lambda a: search_resources(Cache(), a.apk_path, a.query, a.regex, a.max_results))
+    _search_arguments(command)
+
+    command = _command(commands, "resources_read", "Read a decoded or binary resource into an artifact", lambda a: read_resource(Cache(), a.apk_path, a.resource_path))
+    command.add_argument("apk_path")
+    command.add_argument("resource_path")
+
+    command = _command(commands, "resolve_resource_id", "Resolve a resource name or numeric ID", lambda a: resolve_resource(Cache(), a.apk_path, a.resource, a.max_results))
+    command.add_argument("apk_path")
+    command.add_argument("resource")
+    command.add_argument("--max-results", type=int, default=500)
+
+    command = _command(commands, "find_resource_references", "Find JADX source references to a resource", lambda a: find_resource_references(Cache(), a.apk_path, a.resource, a.max_results))
+    command.add_argument("apk_path")
+    command.add_argument("resource")
+    command.add_argument("--max-results", type=int, default=500)
+
     command = _command(commands, "smali_prepare", "Disassemble and cache every DEX with baksmali", _smali_prepare)
     command.add_argument("apk_path")
 
@@ -148,6 +181,15 @@ def _smali_prepare(args: argparse.Namespace) -> dict:
     root, digest, output_hit, tool_hit = prepare_smali(cache, args.apk_path)
     return envelope("Smali trees are ready.", apk_sha256=digest, cache_hit=output_hit,
                     data={"smali_root": str(root), "tool_cache_hit": tool_hit}, tool_versions={"baksmali": "3.0.9"})
+
+
+def _resources_prepare(args: argparse.Namespace) -> dict:
+    cache = Cache()
+    root, digest, cache_hit = prepare_resources(cache, args.apk_path)
+    file_count = sum(1 for path in root.rglob("*") if path.is_file() and not (path.parent == root and re.fullmatch(r"classes(?:\d+)?\.dex", path.name)))
+    return envelope("Decoded resource tree is ready.", apk_sha256=digest, cache_hit=cache_hit,
+                    data={"resource_root": str(root), "files": file_count},
+                    tool_versions={"jadx": "1.5.0", "resource_schema": "full-v1"})
 
 
 def _read_artifact(args: argparse.Namespace) -> dict:

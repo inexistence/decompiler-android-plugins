@@ -9,7 +9,9 @@ EXPECTED = {
     "check_environment", "inspect_apk", "search_references", "decompile_class",
     "jadx_prepare", "jadx_search", "jadx_read_source", "smali_prepare",
     "smali_search", "smali_read_method", "find_direct_callers",
-    "find_direct_callees", "read_artifact", "cache_stats",
+    "find_direct_callees", "read_artifact", "cache_stats", "resources_prepare",
+    "resources_list", "resources_search", "resources_read", "resolve_resource_id",
+    "find_resource_references",
 }
 
 parser = build_parser()

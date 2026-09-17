@@ -1,7 +1,7 @@
 {
   "name": "decompiler-android-plugins",
   "version": "0.1.0",
-  "description": "Skill-guided local Android APK analysis through a cached command-line interface.",
+  "description": "Skill-guided local Android code and resource analysis through a cached command-line interface.",
   "author": {
     "name": "inexistence",
     "url": "https://github.com/inexistence"
@@ -9,15 +9,15 @@
   "homepage": "https://github.com/inexistence/decompiler-android-plugins",
   "repository": "https://github.com/inexistence/decompiler-android-plugins",
   "license": "Apache-2.0",
-  "keywords": ["android", "apk", "decompiler", "jadx", "smali"],
+  "keywords": ["android", "apk", "decompiler", "jadx", "smali", "resources"],
   "skills": "./skills/",
   "interface": {
     "displayName": "Android Decompiler",
     "shortDescription": "Inspect and decompile local Android APKs",
-    "longDescription": "A Skill-guided CLI for targeted DroidASC queries, JADX source, smali, direct call edges, and a shared content-addressed cache.",
+    "longDescription": "A Skill-guided CLI for DroidASC queries, JADX source and resources, smali, direct call edges, and a shared content-addressed cache.",
     "developerName": "inexistence",
     "category": "Engineering",
-    "capabilities": ["Local APK analysis", "CLI decompilation", "Call graph"],
+    "capabilities": ["Local APK analysis", "Code and resource decompilation", "Call graph"],
     "websiteURL": "https://github.com/inexistence/decompiler-android-plugins",
     "defaultPrompt": [
       "Inspect this APK and identify its architecture.",

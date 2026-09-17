@@ -1,6 +1,6 @@
 ---
 name: android-decompiler
-description: Analyze a user-provided local Android APK by orchestrating the bundled decompiler-android CLI with cached DroidASC, JADX, smali, and explicit DEX call edges.
+description: Analyze a user-provided local Android APK by orchestrating the bundled decompiler-android CLI with cached DroidASC, JADX code and resources, smali, and explicit DEX call edges.
 ---
 
 # Android Decompiler
@@ -13,6 +13,8 @@ Prefer the smallest command that answers the question:
 
 - `search_references <apk> <string|type|method|field> <value>` and `decompile_class <apk> <class>` handle focused questions.
 - `jadx_prepare <apk>`, `jadx_search <apk> <query>`, and `jadx_read_source <apk> <source>` handle broader readable-source exploration.
+- `resources_prepare <apk>`, `resources_list <apk>`, `resources_search <apk> <query>`, and `resources_read <apk> <path>` inspect decoded manifests, XML, values, images, and assets.
+- `resolve_resource_id <apk> <id|type/name>` maps resource IDs and names. `find_resource_references <apk> <id|type/name>` locates JADX code references.
 - `smali_prepare <apk>`, `smali_search <apk> <query>`, and `smali_read_method <apk> <class> <method>` provide exact bytecode evidence.
 - `find_direct_callers <apk> <method>` and `find_direct_callees <apk> <method>` report explicit `invoke-*` edges.
 - `cache_stats` reports cache use. Do not rerun expensive preparation merely to retrieve a large result.

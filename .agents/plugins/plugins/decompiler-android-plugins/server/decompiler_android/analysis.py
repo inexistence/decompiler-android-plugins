@@ -127,7 +127,7 @@ def prepare_jadx(cache: Cache, apk_path: str) -> tuple[Path, str, bool, bool]:
     manager = ToolManager(cache)
     executable, tool_hit = manager.prepare_jadx()
     version = manager.versions()["jadx"]
-    output = cache.work / "jadx" / digest / version
+    output = cache.work / "jadx" / digest / f"{version}-full-v1"
     marker = output / ".complete"
     if marker.is_file():
         return output, digest, True, tool_hit
@@ -139,7 +139,7 @@ def prepare_jadx(cache: Cache, apk_path: str) -> tuple[Path, str, bool, bool]:
         if temp.exists():
             shutil.rmtree(temp)
         temp.parent.mkdir(parents=True, exist_ok=True)
-        run([executable, "--no-res", "-d", temp, apk])
+        run([executable, "--quiet", "-d", temp, apk])
         (temp / ".complete").write_text("complete\n", encoding="utf-8")
         if output.exists():
             shutil.rmtree(output)
@@ -151,7 +151,7 @@ def jadx_search_sources(cache: Cache, apk_path: str, query: str, regex: bool = F
     if max_results < 1 or max_results > 5000:
         raise ValueError("max_results must be between 1 and 5000")
     root, digest, prepare_hit, _ = prepare_jadx(cache, apk_path)
-    key = stable_key("jadx-search", digest, "1.5.0", query, regex, max_results)
+    key = stable_key("jadx-search", digest, "1.5.0", "full-v1", query, regex, max_results)
     store = ArtifactStore(cache)
     found = cache.cached_result(key)
     if found:

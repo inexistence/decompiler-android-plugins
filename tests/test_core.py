@@ -19,6 +19,13 @@ from decompiler_android.artifacts import ArtifactStore
 from decompiler_android.cache import Cache, stable_key
 from decompiler_android.cli import build_parser
 from decompiler_android.downloads import DownloadError, _download
+from decompiler_android.resources import (
+    find_resource_references,
+    read_resource,
+    resolve_resource,
+    resource_inventory,
+    search_resources,
+)
 from decompiler_android.smali import query_calls
 
 
@@ -52,10 +59,12 @@ class CacheTests(unittest.TestCase):
 
         parser = build_parser()
         subcommands = next(action for action in parser._actions if isinstance(action, argparse._SubParsersAction))
-        self.assertEqual(len(subcommands.choices), 14)
+        self.assertEqual(len(subcommands.choices), 20)
         self.assertIn("inspect_apk", subcommands.choices)
         self.assertIn("find_direct_callers", subcommands.choices)
         self.assertIn("read_artifact", subcommands.choices)
+        self.assertIn("resources_search", subcommands.choices)
+        self.assertIn("resolve_resource_id", subcommands.choices)
 
 
 class ArtifactTests(unittest.TestCase):
@@ -144,6 +153,55 @@ class AnalysisTests(unittest.TestCase):
             self.assertEqual(len(lines), 1)
             self.assertEqual(lines[0]["caller"], "Lcom/example/Caller;->run()V")
             self.assertEqual(lines[0]["callee"], "Lcom/example/Target;->hit()V")
+
+
+class ResourceTests(unittest.TestCase):
+    def setUp(self):
+        self.temporary = tempfile.TemporaryDirectory()
+        self.root = Path(self.temporary.name)
+        self.cache = Cache(self.root / "cache")
+        self.jadx = self.root / "jadx"
+        resources = self.jadx / "resources/res"
+        (resources / "values").mkdir(parents=True)
+        (resources / "layout").mkdir(parents=True)
+        (resources / "values/public.xml").write_text(
+            '<?xml version="1.0"?><resources><public type="string" name="fixture_label" id="0x7f010001" /></resources>',
+            encoding="utf-8",
+        )
+        (resources / "values/strings.xml").write_text(
+            '<resources><string name="fixture_label">fixture-resource-token</string></resources>', encoding="utf-8"
+        )
+        (resources / "layout/activity_main.xml").write_text(
+            '<TextView text="@string/fixture_label" />', encoding="utf-8"
+        )
+        (self.jadx / "resources/classes.dex").write_bytes(b"not-a-resource")
+        source = self.jadx / "sources/com/example/Use.java"
+        source.parent.mkdir(parents=True)
+        source.write_text("class Use { int value = R.string.fixture_label; }", encoding="utf-8")
+        self.prepare = patch("decompiler_android.resources.prepare_jadx", return_value=(self.jadx, "abc", True, True))
+        self.prepare.start()
+
+    def tearDown(self):
+        self.prepare.stop()
+        self.temporary.cleanup()
+
+    def test_inventory_search_and_read(self):
+        inventory = resource_inventory(self.cache, "fixture.apk")
+        self.assertEqual(inventory["data"]["total_files"], 3)
+        search = search_resources(self.cache, "fixture.apk", "fixture-resource-token")
+        self.assertEqual(search["data"]["matches"], 1)
+        result = read_resource(self.cache, "fixture.apk", "res/values/strings.xml")
+        self.assertEqual(result["data"]["media_type"], "application/xml")
+        with self.assertRaises(ValueError):
+            read_resource(self.cache, "fixture.apk", "../../outside")
+
+    def test_resolve_and_find_references(self):
+        resolved = resolve_resource(self.cache, "fixture.apk", "@string/fixture_label")
+        self.assertEqual(resolved["data"]["resources"][0]["id"], "0x7f010001")
+        by_decimal = resolve_resource(self.cache, "fixture.apk", str(int("0x7f010001", 16)))
+        self.assertEqual(by_decimal["data"]["matches"], 1)
+        references = find_resource_references(self.cache, "fixture.apk", "string/fixture_label")
+        self.assertEqual(references["data"]["matches"], 1)
 
 
 if __name__ == "__main__":

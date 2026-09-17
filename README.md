@@ -1,6 +1,6 @@
 # decompiler-android-plugins
 
-A public Codex Marketplace containing a Skill-guided Android APK static-analysis CLI. It combines focused DroidASC queries, full JADX source generation, baksmali disassembly, and an explicit DEX call-edge index.
+A public Codex Marketplace containing a Skill-guided Android APK static-analysis CLI. It combines focused DroidASC queries, full JADX code and resource generation, baksmali disassembly, and an explicit DEX call-edge index.
 
 The plugin reads only APK paths supplied by the user. APKs, paths, generated sources, and usage data stay on the local machine. The plugin has no telemetry and does not upload analysis material.
 
@@ -53,6 +53,7 @@ Uninstalling does not delete analysis caches. See cache management below.
 | Environment and APK | `check_environment`, `inspect_apk` |
 | DroidASC | `search_references`, `decompile_class` |
 | JADX | `jadx_prepare`, `jadx_search`, `jadx_read_source` |
+| Resources | `resources_prepare`, `resources_list`, `resources_search`, `resources_read`, `resolve_resource_id`, `find_resource_references` |
 | Smali | `smali_prepare`, `smali_search`, `smali_read_method` |
 | Direct calls | `find_direct_callers`, `find_direct_callees` |
 | Artifacts and cache | `read_artifact`, `cache_stats` |
@@ -64,12 +65,14 @@ The entry point is inside the installed plugin at `scripts/decompiler-android`. 
 .agents/plugins/plugins/decompiler-android-plugins/scripts/decompiler-android inspect_apk ./app.apk
 .agents/plugins/plugins/decompiler-android-plugins/scripts/decompiler-android search_references ./app.apk string token
 .agents/plugins/plugins/decompiler-android-plugins/scripts/decompiler-android jadx_search ./app.apk Authorization
+.agents/plugins/plugins/decompiler-android-plugins/scripts/decompiler-android resources_search ./app.apk app_name
+.agents/plugins/plugins/decompiler-android-plugins/scripts/decompiler-android resolve_resource_id ./app.apk '@string/app_name'
 .agents/plugins/plugins/decompiler-android-plugins/scripts/decompiler-android find_direct_callers ./app.apk 'Lcom/example/Main;->run()V'
 ```
 
 Run `decompiler-android <command> --help` for command-specific options. Commands write one structured JSON object to stdout. Errors use a JSON object on stderr and a nonzero exit status.
 
-Every analysis result includes the APK SHA-256, relevant tool versions, whether reusable work was found in cache, a short summary, and an artifact locator when output is large. Use `read_artifact` with byte offsets to page through artifacts.
+Every analysis result includes the APK SHA-256, relevant tool versions, whether reusable work was found in cache, a short summary, and an artifact locator when output is large. Use `read_artifact` with byte offsets to page through text artifacts. `resources_read` also returns the absolute local artifact path and media type so image or binary resources can be opened directly.
 
 The direct call tools record only concrete targets present in DEX `invoke-*` instructions. They do not resolve virtual or interface dispatch and do not infer reflection, JNI, or dynamically loaded DEX behavior.
 

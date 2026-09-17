@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import os
+import shutil
 from pathlib import Path
 
 from .cache import Cache
@@ -19,6 +20,21 @@ class ArtifactStore:
         if not path.exists():
             temp = path.with_name(f".{path.name}.{os.getpid()}.tmp")
             temp.write_bytes(data)
+            os.replace(temp, path)
+        return self.describe(path)
+
+    def write_file(self, source: Path, suffix: str | None = None) -> dict:
+        digest = hashlib.sha256()
+        with source.open("rb") as stream:
+            for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+                digest.update(chunk)
+        extension = source.suffix if suffix is None else suffix
+        path = self.cache.artifacts / digest.hexdigest()[:2] / f"{digest.hexdigest()}{extension}"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        if not path.exists():
+            temp = path.with_name(f".{path.name}.{os.getpid()}.tmp")
+            with source.open("rb") as input_stream, temp.open("wb") as output_stream:
+                shutil.copyfileobj(input_stream, output_stream, length=1024 * 1024)
             os.replace(temp, path)
         return self.describe(path)
 
