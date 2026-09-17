@@ -1,0 +1,52 @@
+.github/workflows/ci.yml
+  s_620c6805b00a15::t_673dbf38742ddf 59-60,68-69,73-74
+  s_620c6805b00a15::t_3de87ac3937ae9 61,70,75
+scripts/check_cli_commands.py
+  s_620c6805b00a15::t_9b3355cf116115 12-14
+CHANGELOG.md
+  s_620c6805b00a15::t_673dbf38742ddf 8-9
+scripts/build_fixture.sh
+  s_620c6805b00a15::t_a47fdf0a283df0 13,17,20-31,39,44
+  s_620c6805b00a15::t_7b05a5041fe0ae 40-42,46,48-50
+  s_620c6805b00a15::t_4df35d5c788850 45
+.agents/plugins/plugins/decompiler-android-plugins/server/decompiler_android/artifacts.py
+  s_620c6805b00a15::t_1a6196b5d7329f 5,23-37
+README.md
+  s_620c6805b00a15::t_673dbf38742ddf 3,56,68-69,75
+.agents/plugins/plugins/decompiler-android-plugins/.codex-plugin/plugin.json
+  s_620c6805b00a15::t_673dbf38742ddf 4,12,17,20
+.agents/plugins/plugins/decompiler-android-plugins/server/decompiler_android/analysis.py
+  s_620c6805b00a15::t_1a6196b5d7329f 130,142,154
+.agents/plugins/plugins/decompiler-android-plugins/server/decompiler_android/cli.py
+  s_620c6805b00a15::t_9b9031b5a4b568 189,191
+  s_620c6805b00a15::t_9b3355cf116115 24-31,102-126,184-188,190,192
+.agents/plugins/plugins/decompiler-android-plugins/server/decompiler_android/resources.py
+  s_620c6805b00a15::t_3de87ac3937ae9 32,41,47
+  s_620c6805b00a15::t_efefc24f42cf0d 19
+  s_620c6805b00a15::t_1a6196b5d7329f 1-12,14-18,20-31,33-40,42-46,48-127,129-130,138-197
+  s_620c6805b00a15::t_9b3355cf116115 13,128,131-137
+tests/test_core.py
+  s_620c6805b00a15::t_a47fdf0a283df0 22-28,156-204
+  s_620c6805b00a15::t_9b3355cf116115 62,66-67
+.agents/plugins/plugins/decompiler-android-plugins/skills/android-decompiler/SKILL.md
+  s_620c6805b00a15::t_673dbf38742ddf 3,16-17
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "fa387b828fdee270991c2f614cbd8317e13fe6c1",
+  "prompts": {},
+  "logical_commit_id": "fa387b828fdee270991c2f614cbd8317e13fe6c1",
+  "sessions": {
+    "s_620c6805b00a15": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0a8f0-3ee6-7a30-a97f-be8a6f935754",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Jianbin <inexistenceorz@gmail.com>",
+      "total_additions": 382,
+      "total_deletions": 34
+    }
+  }
+}
