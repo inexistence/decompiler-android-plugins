@@ -1,0 +1,68 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - run: python -m pip install platformdirs==4.11.9 filelock==3.32.7
+      - run: python -m unittest discover -s tests -v
+      - run: python -m compileall -q .agents/plugins/plugins/decompiler-android-plugins/server
+
+  smoke:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: android-actions/setup-android@v3
+      - run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+      - run: ./scripts/build_fixture.sh tests/fixtures/synthetic.apk
+      - name: Bootstrap and list CLI commands
+        env:
+          DECOMPILER_ANDROID_CACHE_DIR: ${{ runner.temp }}/decompiler-cache
+        run: |
+          .agents/plugins/plugins/decompiler-android-plugins/scripts/decompiler-android check_environment
+          VENV=$(find "$DECOMPILER_ANDROID_CACHE_DIR/runtime" -mindepth 1 -maxdepth 1 -type d -name 'py*' | head -1)
+          PYTHONPATH=.agents/plugins/plugins/decompiler-android-plugins/server "$VENV/bin/python" scripts/check_cli_commands.py
+      - name: End-to-end smali and call graph smoke test
+        env:
+          DECOMPILER_ANDROID_CACHE_DIR: ${{ runner.temp }}/decompiler-cache
+        run: |
+          CLI=.agents/plugins/plugins/decompiler-android-plugins/scripts/decompiler-android
+          "$CLI" --compact smali_prepare tests/fixtures/synthetic.apk > "$RUNNER_TEMP/smali.json"
+          "$CLI" --compact find_direct_callers tests/fixtures/synthetic.apk 'Target;->hit' > "$RUNNER_TEMP/callers.json"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          root = Path(os.environ["RUNNER_TEMP"])
+          smali = json.loads((root / "smali.json").read_text())
+          callers = json.loads((root / "callers.json").read_text())
+          assert smali["apk_sha256"], smali
+          assert callers["data"]["edges"] == 1, callers
+          print(callers["summary"])
+          PY

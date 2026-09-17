@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "tools": {
+    "droidasc": {
+      "version": "0.1.0",
+      "distribution": "python-wheel",
+      "filename": "droidasc-0.1.0-py3-none-any.whl",
+      "url": "https://files.pythonhosted.org/packages/4a/34/ed09039ec346fe5fa072e493568323c37acc0c296c44ad9c9931a5f82617/droidasc-0.1.0-py3-none-any.whl",
+      "sha256": "95df248800300eca77929cdb8f72bb51039125948f018e1eb4c9c9e13fbe3b91",
+      "license": "Apache-2.0",
+      "layout": "Wheel is downloaded and hash-verified by bootstrap.py, then installed in the plugin-managed virtual environment"
+    },
+    "jadx": {
+      "version": "1.5.0",
+      "distribution": "zip",
+      "filename": "jadx-1.5.0.zip",
+      "url": "https://github.com/skylot/jadx/releases/download/v1.5.0/jadx-1.5.0.zip",
+      "sha256": "c5a713fa4800cbb9e6df85ced1bef95ba329040c95cb87d54465f108483e4ef9",
+      "license": "Apache-2.0",
+      "executable": "bin/jadx",
+      "layout": "Release zip extracted verbatim; executable is bin/jadx"
+    },
+    "baksmali": {
+      "version": "3.0.9",
+      "distribution": "java-classpath",
+      "license": "BSD-3-Clause",
+      "main_class": "com.android.tools.smali.baksmali.Main",
+      "layout": "Official Google Maven modules plus their fixed runtime dependencies, invoked as a Java classpath",
+      "artifacts": [
+        {
+          "filename": "smali-baksmali-3.0.9.jar",
+          "url": "https://dl.google.com/dl/android/maven2/com/android/tools/smali/smali-baksmali/3.0.9/smali-baksmali-3.0.9.jar",
+          "sha256": "e7d0166945565a87f3997d1aea8779202dbb6cb0585a39ee20bab8a2f5ba87f6",
+          "license": "BSD-3-Clause"
+        },
+        {
+          "filename": "smali-dexlib2-3.0.9.jar",
+          "url": "https://dl.google.com/dl/android/maven2/com/android/tools/smali/smali-dexlib2/3.0.9/smali-dexlib2-3.0.9.jar",
+          "sha256": "8b547506f62f91d74b70f4beb4989b99e1ff61fc50b2525e9796ca35f0a351dc",
+          "license": "BSD-3-Clause"
+        },
+        {
+          "filename": "smali-util-3.0.9.jar",
+          "url": "https://dl.google.com/dl/android/maven2/com/android/tools/smali/smali-util/3.0.9/smali-util-3.0.9.jar",
+          "sha256": "4673762894ba4156081fc5c642f74d6e78aef8b1a9c7702d691e3171d8cc1153",
+          "license": "BSD-3-Clause"
+        },
+        {
+          "filename": "guava-31.1-android.jar",
+          "url": "https://repo.maven.apache.org/maven2/com/google/guava/guava/31.1-android/guava-31.1-android.jar",
+          "sha256": "32ac2ed709d96d278b5d2e3e5cea178fa4939939c525fb647532f013308db309",
+          "license": "Apache-2.0"
+        },
+        {
+          "filename": "jcommander-1.64.jar",
+          "url": "https://repo.maven.apache.org/maven2/com/beust/jcommander/1.64/jcommander-1.64.jar",
+          "sha256": "156be736199c990321d9ff77090b199629cfc9865e2d6c13f7cd291bb1641817",
+          "license": "Apache-2.0"
+        },
+        {
+          "filename": "failureaccess-1.0.1.jar",
+          "url": "https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1.jar",
+          "sha256": "a171ee4c734dd2da837e4b16be9df4661afab72a41adaf31eb84dfdaf936ca26",
+          "license": "Apache-2.0"
+        },
+        {
+          "filename": "listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar",
+          "url": "https://repo.maven.apache.org/maven2/com/google/guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar",
+          "sha256": "b372a037d4230aa57fbeffdef30fd6123f9c0c2db85d0aced00c91b974f33f99",
+          "license": "Apache-2.0"
+        },
+        {
+          "filename": "jsr305-3.0.2.jar",
+          "url": "https://repo.maven.apache.org/maven2/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar",
+          "sha256": "766ad2a0783f2687962c8ad74ceecc38a28b9f72a2d085ee438b7813e928d0c7",
+          "license": "BSD-3-Clause"
+        },
+        {
+          "filename": "checker-qual-3.12.0.jar",
+          "url": "https://repo.maven.apache.org/maven2/org/checkerframework/checker-qual/3.12.0/checker-qual-3.12.0.jar",
+          "sha256": "ff10785ac2a357ec5de9c293cb982a2cbb605c0309ea4cc1cb9b9bc6dbe7f3cb",
+          "license": "MIT"
+        },
+        {
+          "filename": "error_prone_annotations-2.11.0.jar",
+          "url": "https://repo.maven.apache.org/maven2/com/google/errorprone/error_prone_annotations/2.11.0/error_prone_annotations-2.11.0.jar",
+          "sha256": "721cb91842b46fa056847d104d5225c8b8e1e8b62263b993051e1e5a0137b7ec",
+          "license": "Apache-2.0"
+        },
+        {
+          "filename": "j2objc-annotations-1.3.jar",
+          "url": "https://repo.maven.apache.org/maven2/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3.jar",
+          "sha256": "21af30c92267bd6122c0e0b4d20cccb6641a37eaf956c6540ec471d584e64a7b",
+          "license": "Apache-2.0"
+        }
+      ]
+    }
+  }
+}

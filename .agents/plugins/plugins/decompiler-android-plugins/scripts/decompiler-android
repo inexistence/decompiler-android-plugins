@@ -1,0 +1,25 @@
+#!/bin/sh
+set -eu
+
+PLUGIN_ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+PYTHON_BIN=${DECOMPILER_ANDROID_PYTHON:-python3}
+
+"$PYTHON_BIN" -c 'import sys; raise SystemExit(0 if sys.version_info >= (3, 10) else "Python 3.10 or newer is required")'
+
+if [ -n "${DECOMPILER_ANDROID_CACHE_DIR:-}" ]; then
+  CACHE_ROOT=$DECOMPILER_ANDROID_CACHE_DIR
+elif [ -n "${XDG_CACHE_HOME:-}" ]; then
+  CACHE_ROOT=$XDG_CACHE_HOME/decompiler-android
+elif [ "$(uname -s)" = Darwin ]; then
+  CACHE_ROOT=$HOME/Library/Caches/decompiler-android
+else
+  CACHE_ROOT=$HOME/.cache/decompiler-android
+fi
+
+PY_TAG=$($PYTHON_BIN -c 'import sys; print(f"py{sys.version_info.major}.{sys.version_info.minor}")')
+VENV="$CACHE_ROOT/runtime/$PY_TAG"
+"$PYTHON_BIN" "$PLUGIN_ROOT/scripts/bootstrap.py" "$PLUGIN_ROOT" "$CACHE_ROOT"
+
+export PYTHONPATH="$PLUGIN_ROOT/server${PYTHONPATH:+:$PYTHONPATH}"
+export PATH="$VENV/bin:$PATH"
+exec "$VENV/bin/python" -m decompiler_android.cli "$@"
